@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EverNote.iml" filepath="$PROJECT_DIR$/EverNote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EverNote_main.iml" filepath="$PROJECT_DIR$/.idea/modules/EverNote_main.iml" group="EverNote" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EverNote_test.iml" filepath="$PROJECT_DIR$/.idea/modules/EverNote_test.iml" group="EverNote" />
+    </modules>
+  </component>
+</project>
