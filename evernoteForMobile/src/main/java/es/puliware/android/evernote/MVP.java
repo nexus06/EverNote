@@ -1,6 +1,8 @@
 package es.puliware.android.evernote;
 
 import es.puliware.android.evernote.utils.ContextView;
+import es.puliware.android.evernote.utils.LoginModelOps;
+import es.puliware.android.evernote.utils.LoginPresenterOps;
 
 /**
  * Created by nexus on 2/19/17.
@@ -12,88 +14,81 @@ import es.puliware.android.evernote.utils.ContextView;
 public interface MVP {
     /**
      * This interface defines the minimum API needed by the
-     * AcronymPresenter class in the Presenter layer to interact with
-     * AcronymExpansionActivity in the View layer.  It extends the
+     * LoginUserPresenter class in the Presenter layer to interact with
+     * LoginActivity in the View layer.  It extends the
      * ContextView interface so the Presentation layer can access
      * Context's defined in the View layer.
      */
-    public interface RequiredViewOps
+    public interface RequiredLoginViewOps
             extends ContextView {
         /**
-         * Start a new Activity that displays the Acronym Expansions
-         * to the user.
          *
-         * @param results
-         *            List of AcronymExpansions to display.
+         * @param result
+         *        if successed.
+         *@param failureReason
+         *
          */
-        void displayResults(List<AcronymExpansion> results,
+        void displayLoginResult(boolean result,
                             String failureReason);
+
+        void onLoginFinished(boolean successful);
     }
 
     /**
      * This interface defines the minimum public API provided by the
-     * AcronymPresenter class in the Presenter layer to the
-     * AcronymExpansionActivity in the View layer.  It extends the
+     * UserLoginPresenter class in the Presenter layer to the
+     * LoginActivity in the View layer.  It extends the
      * PresenterOps interface, which is instantiated by the
-     * MVP.RequiredViewOps interface used to define the parameter
-     * that's passed to the onConfigurationChange() method.
+     * MVP.RequiredViewOps
      */
-    public interface ProvidedPresenterOps
-            extends PresenterOps<MVP.RequiredViewOps> {
+    public interface ProvidedLoginPresenterOps
+            extends LoginPresenterOps<RequiredLoginViewOps> {
         /**
-         * Initiate the synchronous acronym lookup when the user
-         * presses the "Lookup Acronym Async" button.
-         *
-         * @return false if a call is already in progress, else true.
+         * Initiate authenticate process
          */
-        boolean expandAcronymAsync(String acronym);
+        void authenticate();
 
         /**
-         * Initiate the synchronous acronym lookup when the user
-         * presses the "Lookup Acronym Sync" button.  It uses an
-         * AsyncTask.
-         *
-         * @return false if a call is already in progress, else true.
+         *Check if user already logged in
+         * @return false if already logged in
          */
-        boolean expandAcronymSync(String acronym);
+        boolean isLoggedIn();
+
+        boolean logout();
     }
 
     /**
      * This interface defines the minimum API needed by the
-     * AcronymModel class in the Model layer to interact with
-     * AcronymPresenter class in the Presenter layer.  Since this
-     * interface is identical to the one used by the RequiredViewOps
+     * LoginModel class in the Model layer to interact with
+     * LoginPresenter class in the Presenter layer.  Since this
+     * interface is identical to the one used by the RequiredLogginViewOps
      * interface it simply extends it.
      */
     public interface RequiredPresenterOps
-            extends RequiredViewOps {
+            extends RequiredLoginViewOps {
     }
 
     /**
      * This interface defines the minimum public API provided by the
-     * AcronymModel class in the Model layer to the AcronymPresenter
+     * LoginUserModel class in the Model layer to the UserLoginPresenter
      * class in the Presenter layer.  It extends the ModelOps
      * interface, which is parameterized by the
-     * MVP.RequiredPresenterOps interface used to define the argument
-     * passed to the onConfigurationChange() method.
+     * MVP.RequiredPresenterOps interface
      */
-    public interface ProvidedModelOps
-            extends ModelOps<MVP.RequiredPresenterOps> {
+    public interface ProvidedLoginModelOps
+            extends LoginModelOps<RequiredPresenterOps> {
         /**
-         * Use a two-way synchronous AIDL call to expand the @a
-         * acronym parameter.  Must be called in a background thread
-         * (e.g., via AsyncTask).
+         * log in process
          */
-        List<AcronymExpansion> getAcronymExpansions(String acronym);
+        void authenticate();
 
         /**
-         * Use a two-way asynchronous AIDL call to expand the @a
-         * acronym parameter.  Need not be called in a background
-         * thread since the caller isn't blocked.
+         *Check if user already logged in
+         * @return false if already logged in
          */
-        void getAcronymExpansions(String acronym,
-                                  AcronymResults presenter);
+        boolean isLoggedIn();
+
+        boolean logout();
+
     }
 }
-    Contact GitHub API Training Shop Blog About
-        © 2017 GitHub, Inc. Terms Privacy Security Status Help

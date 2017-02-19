@@ -1,73 +1,81 @@
 package es.puliware.android.evernote.model;
 
+import android.app.Activity;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
+import com.evernote.client.android.EvernoteSession;
+import es.puliware.android.evernote.MVP;
 import es.puliware.android.evernote.R;
+
+import java.lang.ref.WeakReference;
 
 /**
  * Created by nexus on 2/19/17.
  */
-public class UserModel {
 
-
-
+/**
+ * This class plays the "Model" role in the Model-View-Presenter (MVP)
+ * pattern by defining an interface for providing data that will be
+ * acted upon by the "Presenter" and "View" layers in the MVP pattern.
+ * It implements the MVP.ProvidedModelOps so it can be created/managed
+ * by the GenericModel framework.
+ */
+public class UserModel implements MVP.ProvidedLoginModelOps{
 
     /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
+     * tag for logging
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    protected final static String TAG =
+            UserModel.class.getSimpleName();
+
+    /*Set up an EvernoteSession
+    * Define your app credentials (key, secret, and host). See {@linktourl http://dev.evernote.com/documentation/cloud/}
+    */
+    private static final String CONSUMER_KEY = "nexus06";
+    private static final String CONSUMER_SECRET = "4ded854df3b9aa8d";
+    private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
+
+    private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
+
+    /**
+     * A WeakReference used to access methods in the Presenter layer.
+     * The WeakReference enables garbage collection.
+     */
+    private WeakReference<MVP.RequiredPresenterOps> mPresenter;
+    private EvernoteSession mEvernoteSession;
 
 
+    @Override
+    public void onCreate(MVP.RequiredPresenterOps presenter) {
 
+        //set weak reference to presenter
+        mPresenter = new WeakReference<>(presenter);
 
-        private final String mEmail;
-        private final String mPassword;
+        mEvernoteSession = new EvernoteSession.Builder(mPresenter.get().getApplicationContext())
+                .setEvernoteService(EVERNOTE_SERVICE)
+                .setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS)
+                .build(CONSUMER_KEY, CONSUMER_SECRET)
+                .asSingleton();
 
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
+    }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
+    @Override
+    public void onDestroy(boolean isChangingConfigurations) {
 
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
+    }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
+    @Override
+    public void authenticate() {
+        mEvernoteSession.authenticate((FragmentActivity) mPresenter.get().getActivityContext());
+    }
 
-            // TODO: register the new account here.
-            return true;
-        }
+    @Override
+    public boolean isLoggedIn() {
+        return mEvernoteSession.isLoggedIn();
+    }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+    @Override
+    public boolean logout() {
+       return mEvernoteSession.logOut();
     }
 }

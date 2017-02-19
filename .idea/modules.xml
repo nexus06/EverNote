@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/EverNote.iml" filepath="$PROJECT_DIR$/EverNote.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EverNote_main.iml" filepath="$PROJECT_DIR$/.idea/modules/EverNote_main.iml" group="EverNote" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EverNote_test.iml" filepath="$PROJECT_DIR$/.idea/modules/EverNote_test.iml" group="EverNote" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/EverNote.iml" filepath="$PROJECT_DIR$/.idea/modules/EverNote.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/evernoteForMobile/evernoteForMobile.iml" filepath="$PROJECT_DIR$/.idea/modules/evernoteForMobile/evernoteForMobile.iml" />
     </modules>
   </component>
 </project>

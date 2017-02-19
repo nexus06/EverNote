@@ -11,9 +11,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
-        <activity android:name="com.evernote.client.android.EvernoteOAuthActivity" />
-        <activity android:name="com.evernote.client.android.login.EvernoteLoginActivity" />
+        android:theme="@style/AppTheme"
+        android:largeHeap="true">
+       <!-- <activity android:name="com.evernote.client.android.EvernoteOAuthActivity" />
+        <activity android:name="com.evernote.client.android.login.EvernoteLoginActivity" />-->
         <activity
             android:name=".view.LoginActivity"
             android:label="@string/title_activity_login">
