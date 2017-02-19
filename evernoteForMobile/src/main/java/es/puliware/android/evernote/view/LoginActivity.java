@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity implements
     public void displayLoginResult(boolean successful, String failureReason) {
         if (successful) {
             Toast.makeText(this,"login succesed", Toast.LENGTH_LONG).show();
+            startActivity(ItemListActivity.getLaunchIntent(this));
         } else {
             mLoginLayout.setVisibility(View.VISIBLE);
         }
