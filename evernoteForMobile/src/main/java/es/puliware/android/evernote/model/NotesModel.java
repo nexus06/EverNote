@@ -1,10 +1,17 @@
 package es.puliware.android.evernote.model;
 
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import com.evernote.client.android.EvernoteSession;
-import es.puliware.android.evernote.MVPLogin;
+import com.evernote.client.android.asyncclient.*;
+import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.notestore.NoteList;
+import com.evernote.edam.type.Note;
+import com.evernote.edam.type.Notebook;
+import es.puliware.android.evernote.MVPNotes;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Created by nexus on 2/19/17.
@@ -14,16 +21,15 @@ import java.lang.ref.WeakReference;
  * This class plays the "Model" role in the Model-View-Presenter (MVP)
  * pattern by defining an interface for providing data that will be
  * acted upon by the "Presenter" and "View" layers in the MVP pattern.
- * It implements the MVP.ProvidedModelOps so it can be created/managed
- * by the GenericModel framework.
+ * It implements the MVP.ProvidedModelOps
  */
-public class UserModel implements MVPLogin.ProvidedLoginModelOps{
+public class NotesModel implements MVPNotes.ProvidedLoginModelOps{
 
     /**
      * tag for logging
      */
     protected final static String TAG =
-            UserModel.class.getSimpleName();
+            NotesModel.class.getSimpleName();
 
     /*Set up an EvernoteSession
     * Define your app credentials (key, secret, and host). See {@linktourl http://dev.evernote.com/documentation/cloud/}
@@ -38,12 +44,17 @@ public class UserModel implements MVPLogin.ProvidedLoginModelOps{
      * A WeakReference used to access methods in the Presenter layer.
      * The WeakReference enables garbage collection.
      */
-    private WeakReference<MVPLogin.RequiredPresenterOps> mPresenter;
+    private WeakReference<MVPNotes.RequiredPresenterOps> mPresenter;
     private EvernoteSession mEvernoteSession;
+    private EvernoteNoteStoreClient noteStoreClient;
+    private EvernoteUserStoreClient userData;
+    private EvernoteBusinessNotebookHelper businessNoteBookData;
+    private EvernoteLinkedNotebookHelper evernoteLinkedNotebookHelper;
+    private EvernoteSearchHelper searchHelper;
 
 
     @Override
-    public void onCreate(MVPLogin.RequiredPresenterOps presenter) {
+    public void onCreate(MVPNotes.RequiredPresenterOps presenter) {
 
         //set weak reference to presenter
         mPresenter = new WeakReference<>(presenter);
@@ -53,6 +64,14 @@ public class UserModel implements MVPLogin.ProvidedLoginModelOps{
                 .setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS)
                 .build(CONSUMER_KEY, CONSUMER_SECRET)
                 .asSingleton();
+
+        //Create an EvernoteNoteStoreClient to access primary methods for personal note data
+        noteStoreClient = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient();
+
+        //Create an EvernoteUserStoreClient to access User related methods
+        userData = mEvernoteSession.getEvernoteClientFactory().getUserStoreClient();
+
+        searchHelper = mEvernoteSession.getEvernoteClientFactory().getEvernoteSearchHelper();
     }
 
     @Override
@@ -73,5 +92,12 @@ public class UserModel implements MVPLogin.ProvidedLoginModelOps{
     @Override
     public boolean logout() {
        return mEvernoteSession.logOut();
+    }
+
+    @Override
+    public void listNotesAsync(NoteFilter filter) {
+         EvernoteSearchHelper.Search mSearch = new EvernoteSearchHelper.Search().
+                setOffset(0).setMaxNotes(Integer.MAX_VALUE).setNoteFilter(filter);
+        searchHelper.executeAsync(mSearch, (EvernoteCallback<EvernoteSearchHelper.Result>) mPresenter.get());
     }
 }

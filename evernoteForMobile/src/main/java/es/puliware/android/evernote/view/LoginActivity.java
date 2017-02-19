@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import com.evernote.client.android.login.EvernoteLoginFragment;
-import es.puliware.android.evernote.MVP;
+import es.puliware.android.evernote.MVPLogin;
 import es.puliware.android.evernote.R;
 import es.puliware.android.evernote.presenter.UserLoginPresenter;
 import es.puliware.android.evernote.utils.ContextView;
@@ -15,7 +15,7 @@ import es.puliware.android.evernote.utils.ContextView;
  * A login screen that offers login via email/password.
  */
 public class LoginActivity extends AppCompatActivity implements
-        ContextView,MVP.RequiredLoginViewOps,
+        ContextView,MVPLogin.RequiredLoginViewOps,
         EvernoteLoginFragment.ResultCallback, View.OnClickListener{
 
     @Override
@@ -80,8 +80,8 @@ public class LoginActivity extends AppCompatActivity implements
     private void attemptLogin() {
         if(mLoginPresenter.isLoggedIn()){
             mLoginPresenter.displayLoginResult(true, "testing API");
-            //TODO remove at end version
-            mLoginPresenter.logout();
+            /*//TODO remove at end version
+            mLoginPresenter.logout();*/
 
         }else {
             mLoginPresenter.authenticate();

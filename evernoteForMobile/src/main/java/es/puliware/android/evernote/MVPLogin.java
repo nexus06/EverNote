@@ -11,7 +11,7 @@ import es.puliware.android.evernote.utils.LoginPresenterOps;
  * (MVP) pattern.  This design ensures loose coupling between the
  * layers in the app's MVP-based architecture.
  */
-public interface MVP {
+public interface MVPLogin {
     /**
      * This interface defines the minimum API needed by the
      * LoginUserPresenter class in the Presenter layer to interact with
