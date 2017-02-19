@@ -44,10 +44,6 @@ public interface MVPNotes {
      */
     public interface ProvidedLoginPresenterOps
             extends LoginPresenterOps<RequiredLoginViewOps> {
-        /**
-         * Initiate authenticate process
-         */
-        void authenticate();
 
         /**
          *Check if user already logged in
@@ -81,10 +77,6 @@ public interface MVPNotes {
      */
     public interface ProvidedLoginModelOps
             extends LoginModelOps<RequiredPresenterOps> {
-        /**
-         * log in process
-         */
-        void authenticate();
 
         /**
          *Check if user already logged in

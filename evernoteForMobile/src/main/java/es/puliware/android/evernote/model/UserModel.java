@@ -17,7 +17,7 @@ import java.lang.ref.WeakReference;
  * It implements the MVP.ProvidedModelOps so it can be created/managed
  * by the GenericModel framework.
  */
-public class UserModel implements MVPLogin.ProvidedLoginModelOps{
+public class UserModel extends GenericEverModel implements MVPLogin.ProvidedLoginModelOps{
 
     /**
      * tag for logging
@@ -28,8 +28,6 @@ public class UserModel implements MVPLogin.ProvidedLoginModelOps{
     /*Set up an EvernoteSession
     * Define your app credentials (key, secret, and host). See {@linktourl http://dev.evernote.com/documentation/cloud/}
     */
-    private static final String CONSUMER_KEY = "nexus06-1400";
-    private static final String CONSUMER_SECRET = "0a4b971e6352f650";
     private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
 
     private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;

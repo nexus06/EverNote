@@ -19,7 +19,6 @@ import es.puliware.android.evernote.MVPNotes;
 import es.puliware.android.evernote.R;
 
 import es.puliware.android.evernote.presenter.UserNotesPresenter;
-import es.puliware.android.evernote.view.dummy.DummyContent;
 
 import java.util.List;
 

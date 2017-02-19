@@ -1,17 +1,11 @@
 package es.puliware.android.evernote.model;
 
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import com.evernote.client.android.EvernoteSession;
 import com.evernote.client.android.asyncclient.*;
 import com.evernote.edam.notestore.NoteFilter;
-import com.evernote.edam.notestore.NoteList;
-import com.evernote.edam.type.Note;
-import com.evernote.edam.type.Notebook;
 import es.puliware.android.evernote.MVPNotes;
 
 import java.lang.ref.WeakReference;
-import java.util.List;
 
 /**
  * Created by nexus on 2/19/17.
@@ -23,7 +17,7 @@ import java.util.List;
  * acted upon by the "Presenter" and "View" layers in the MVP pattern.
  * It implements the MVP.ProvidedModelOps
  */
-public class NotesModel implements MVPNotes.ProvidedLoginModelOps{
+public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedLoginModelOps{
 
     /**
      * tag for logging
@@ -31,11 +25,7 @@ public class NotesModel implements MVPNotes.ProvidedLoginModelOps{
     protected final static String TAG =
             NotesModel.class.getSimpleName();
 
-    /*Set up an EvernoteSession
-    * Define your app credentials (key, secret, and host). See {@linktourl http://dev.evernote.com/documentation/cloud/}
-    */
-    private static final String CONSUMER_KEY = "nexus06-1400";
-    private static final String CONSUMER_SECRET = "0a4b971e6352f650";
+
     private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
 
     private static final EvernoteSession.EvernoteService EVERNOTE_SERVICE = EvernoteSession.EvernoteService.SANDBOX;
@@ -77,11 +67,6 @@ public class NotesModel implements MVPNotes.ProvidedLoginModelOps{
     @Override
     public void onDestroy(boolean isChangingConfigurations) {
 
-    }
-
-    @Override
-    public void authenticate() {
-        mEvernoteSession.authenticate((FragmentActivity) mPresenter.get().getActivityContext());
     }
 
     @Override
