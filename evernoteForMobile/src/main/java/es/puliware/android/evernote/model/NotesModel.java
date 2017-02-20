@@ -79,6 +79,12 @@ public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedMod
         return mEvernoteSession.isLoggedIn();
     }
 
+
+    @Override
+    public void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback) {
+        noteStoreClient.getNoteAsync(guid,withContent,false,false,false,callback);
+    }
+
     @Override
     public boolean logout() {
        return mEvernoteSession.logOut();

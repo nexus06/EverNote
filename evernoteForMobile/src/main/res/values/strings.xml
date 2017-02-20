@@ -17,4 +17,5 @@
     <string name="title_item_detail">Item Detail</string>
     <string name="action_order_date">Date order</string>
     <string name="action_order_title">Title order</string>
+    <string name="content">Content</string>
 </resources>

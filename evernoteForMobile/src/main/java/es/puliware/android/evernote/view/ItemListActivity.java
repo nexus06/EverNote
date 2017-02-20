@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 
+import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.type.NoteRef;
+import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import es.puliware.android.evernote.MVPNotes;
 import es.puliware.android.evernote.R;
@@ -105,6 +107,11 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         }
         mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
     }
+
+    public void getNote(String guid, boolean withContent, EvernoteCallback<Note> callback) {
+        mNotesPresenter.getNoteAsync(guid, withContent, callback);
+    }
+
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
        // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));

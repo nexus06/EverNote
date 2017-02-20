@@ -62,7 +62,10 @@ public interface MVPNotes {
         void createNoteAsync(Note note);
 
         void setNoteCallback();
+
         void setSearchCallback();
+
+        void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback);
 
     }
 
@@ -99,6 +102,8 @@ public interface MVPNotes {
         void listNotesAsync(NoteFilter filter);
 
         void createNoteAsync(Note note) throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException;
+
+        void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback);
 
     }
 }

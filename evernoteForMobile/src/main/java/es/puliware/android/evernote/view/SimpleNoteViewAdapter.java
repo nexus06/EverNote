@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.type.NoteRef;
+import com.evernote.edam.type.Note;
 import es.puliware.android.evernote.R;
 
 import java.lang.ref.WeakReference;
@@ -18,7 +21,13 @@ import java.util.List;
 /**
  * Created by nexus07 on 20/02/17.
  */
-public class SimpleNoteViewAdapter  extends RecyclerView.Adapter<SimpleNoteViewAdapter.ViewHolder> {
+public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAdapter.ViewHolder> {
+
+    /**
+     * Tag for logging
+     */
+    protected final static String TAG = SimpleNoteViewAdapter.class.getSimpleName();
+    private static EvernoteCallback<Note> callBack;
     private final List<NoteRef> mValues;
     private final boolean mTwoPane;
     private final WeakReference<FragmentActivity> context;
@@ -45,19 +54,33 @@ public class SimpleNoteViewAdapter  extends RecyclerView.Adapter<SimpleNoteViewA
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mTwoPane) {
-                    Bundle arguments = new Bundle();
-                    arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.getGuid());
-                    ItemDetailFragment fragment = new ItemDetailFragment();
-                    fragment.setArguments(arguments);
-                    context.get().getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, fragment).commit();
-                } else {
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, ItemDetailActivity.class);
-                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.getGuid());
 
-                    context.startActivity(intent);
-                }
+                callBack = new EvernoteCallback<Note>() {
+                    @Override
+                    public void onSuccess(Note note) {
+                        if (mTwoPane) {
+                            Bundle arguments = new Bundle();
+                            arguments.putString(ItemDetailFragment.ARG_ITEM_ID, note.getContent());
+                            ItemDetailFragment fragment = new ItemDetailFragment();
+                            fragment.setArguments(arguments);
+                            ((ItemListActivity)context.get()).getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, fragment).commit();
+                        } else {
+                            Intent intent = new Intent(context.get(), ItemDetailActivity.class);
+                            intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, note.getContent());
+                            context.get().startActivity(intent);
+                        }
+
+                    }
+
+                    @Override
+                    public void onException(Exception e) {
+                        Log.e(TAG, Log.getStackTraceString(e));
+
+                    }
+                };
+
+                ((ItemListActivity)context.get()).getNote(holder.mItem.getGuid(), true, SimpleNoteViewAdapter.callBack);
+
             }
         });
     }

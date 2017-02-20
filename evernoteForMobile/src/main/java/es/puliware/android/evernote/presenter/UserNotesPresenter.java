@@ -105,6 +105,11 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
     }
 
     @Override
+    public void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback) {
+        mModelInstance.getNoteAsync(guid,withContent,callback);
+    }
+
+    @Override
     public void setNoteCallback(){
         mNoteCallBack = new EvernoteCallback<Note>() {
             @Override
