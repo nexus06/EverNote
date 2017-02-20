@@ -93,11 +93,13 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
         mSearchCallBack = new EvernoteCallback<EvernoteSearchHelper.Result>() {
             @Override
             public void onSuccess(EvernoteSearchHelper.Result result) {
+                showProgress();
                 displayNotesResult(result.getAllAsNoteRef());
             }
 
             @Override
             public void onException(Exception e) {
+                dismisProgress();
                 Log.e(TAG, Log.getStackTraceString(e));
                 showError(e.getMessage());
             }
@@ -106,20 +108,22 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
 
     @Override
     public void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback) {
+        showProgress();
         mModelInstance.getNoteAsync(guid,withContent,callback);
     }
 
     @Override
     public void setNoteCallback(){
+
         mNoteCallBack = new EvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note note) {
-
+                listNotesAsync(getCurrentOrder());
             }
 
             @Override
             public void onException(Exception e) {
-
+                dismisProgress();
             }
         };
     }
@@ -168,6 +172,7 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
 
     @Override
     public void listNotesAsync(NoteSortOrder order) {
+        showProgress();
         NoteFilter noteFilter = new NoteFilter();
         noteFilter.setOrder(order.getValue());
         mModelInstance.listNotesAsync(noteFilter);
@@ -175,8 +180,10 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
 
     @Override
     public void createNoteAsync(Note note) {
+
         try {
             mModelInstance.createNoteAsync(note);
+            showProgress();
         } catch (EDAMUserException e) {
             Log.e(TAG, Log.getStackTraceString(e));
             showError(e.getMessage());
@@ -192,22 +199,29 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
         }
     }
 
-    /**
-     * Return the initialized ProvidedOps instance for use by the
-     * application.
-     */
-    @SuppressWarnings("unchecked")
-    public MVPNotes.ProvidedModelOps getModel() {
-        return (MVPNotes.ProvidedModelOps) mModelInstance;
-    }
-
     @Override
     public void displayNotesResult(List<NoteRef> result) {
+        dismisProgress();
         mView.get().displayNotesResult(result);
     }
 
     @Override
     public void showError(String cause) {
         mView.get().showError(cause);
+    }
+
+    @Override
+    public void showProgress() {
+        mView.get().showProgress();
+    }
+
+    @Override
+    public void dismisProgress() {
+        mView.get().dismisProgress();
+    }
+
+    @Override
+    public NoteSortOrder getCurrentOrder() {
+        return mView.get().getCurrentOrder();
     }
 }

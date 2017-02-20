@@ -5,14 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.*;
-import android.widget.TextView;
 
+import com.evernote.client.android.EvernoteUtil;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.type.NoteRef;
 import com.evernote.edam.type.Note;
@@ -32,7 +33,7 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity implements MVPNotes.RequiredNotesViewOps, View.OnClickListener {
+public class ItemListActivity extends AppCompatActivity implements MVPNotes.RequiredNotesViewOps, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     /**
      * Tag for logging
@@ -43,12 +44,26 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
      * device.
      */
     private boolean mTwoPane;
+    /**
+     * Provides usernotes-related operations.
+     */
     private UserNotesPresenter mNotesPresenter;
+
+
+
+
+    /**
+     * mantains notes elements
+     */
     private RecyclerView recyclerView;
+
+    SwipeRefreshLayout mProgressView;
+    private NoteSortOrder curOrder = NoteSortOrder.CREATED;
 
     public static Intent getLaunchIntent(Context context){
         return new Intent(context, ItemListActivity.class);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -61,11 +76,13 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_order_title:
-                mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
+                curOrder = NoteSortOrder.TITLE;
+                mNotesPresenter.listNotesAsync(curOrder);
                 return true;
 
             case R.id.action_order_date:
-                mNotesPresenter.listNotesAsync(NoteSortOrder.UPDATED);
+                curOrder = NoteSortOrder.CREATED;
+                mNotesPresenter.listNotesAsync(curOrder);
                 return true;
 
             default:
@@ -78,7 +95,16 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_list);
+        initUIControls();
 
+        // Create the UserNotes object one time.
+        mNotesPresenter = new UserNotesPresenter();
+        mNotesPresenter.onCreate(this);
+        mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
+    }
+
+
+    private void initUIControls() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         assert toolbar != null;
@@ -89,15 +115,6 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         assert fab != null;
         fab.setOnClickListener(this);
 
-
-        // Create the UserNotes object one time.
-        mNotesPresenter = new UserNotesPresenter();
-        mNotesPresenter.onCreate(this);
-
-        recyclerView = (RecyclerView) findViewById(R.id.item_list);
-        assert recyclerView != null;
-        setupRecyclerView(recyclerView);
-
         if (findViewById(R.id.item_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).
@@ -105,12 +122,22 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
+
+        //mantains notes elements in a list.
+        // See {@linktourl https://developer.android.com/training/material/lists-cards.html}
+        recyclerView = (RecyclerView) findViewById(R.id.item_list);
+        assert recyclerView != null;
+        setupRecyclerView(recyclerView);
+
+        mProgressView = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+        mProgressView.setOnRefreshListener(this);
     }
+
 
     public void getNote(String guid, boolean withContent, EvernoteCallback<Note> callback) {
         mNotesPresenter.getNoteAsync(guid, withContent, callback);
     }
+
 
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -125,6 +152,7 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     @Override
     public void displayNotesResult(List<NoteRef> result) {
         Log.d(TAG, "successed getting notes--->"+result.size());
+
         recyclerView.setAdapter(new SimpleNoteViewAdapter(result,mTwoPane,this));
         recyclerView.getAdapter().notifyDataSetChanged();
 
@@ -137,10 +165,56 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     }
 
     @Override
+    public void showProgress() {
+        mProgressView.post(new Runnable() {
+            @Override public void run() {
+                mProgressView.setRefreshing(true);
+            }
+        });
+    }
+
+    @Override
+    public void dismisProgress() {
+        mProgressView.post(new Runnable() {
+            @Override public void run() {
+                mProgressView.setRefreshing(false);
+            }
+        });
+
+    }
+
+    @Override
+    public NoteSortOrder getCurrentOrder() {
+        return curOrder;
+    }
+
+    @Override
     public void onClick(View view) {
         //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
         //mNotesPresenter.listNotebooksAsync();
-         mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
+
+        // mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
+        CreateNoteFragment a = new CreateNoteFragment();
+        a.show(getSupportFragmentManager(),"createDialog");
+
+
+
+
     }
 
+    @Override
+    public void onRefresh() {
+        mNotesPresenter.listNotesAsync(curOrder);
+    }
+
+    public void onAlertDialogPositiveClick(String title, String rawContent) {
+        Note note = new Note();
+        note.setTitle(title);
+        String formattedContent=
+        EvernoteUtil.NOTE_PREFIX
+                + rawContent
+                + EvernoteUtil.NOTE_SUFFIX;
+        note.setContent(formattedContent);
+        mNotesPresenter.createNoteAsync(note);
+    }
 }

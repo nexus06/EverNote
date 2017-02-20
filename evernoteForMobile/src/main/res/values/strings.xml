@@ -18,4 +18,8 @@
     <string name="action_order_date">Date order</string>
     <string name="action_order_title">Title order</string>
     <string name="content">Content</string>
+    <string name="title">Title</string>
+    <string name="create">Create</string>
+    <string name="create_note">Create note</string>
+    <string name="empty">Can\'t be empty</string>
 </resources>

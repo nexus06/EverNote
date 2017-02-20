@@ -1,6 +1,5 @@
 package es.puliware.android.evernote.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,10 +11,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.type.NoteRef;
+import com.evernote.edam.error.EDAMNotFoundException;
+import com.evernote.edam.error.EDAMSystemException;
+import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.type.Note;
+import com.evernote.thrift.TException;
 import es.puliware.android.evernote.R;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,11 +49,23 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
         return new ViewHolder(view);
     }
 
+    // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getTitle());
-        // holder.mContentView.setText(mValues.get(position).describeContents());
+        holder.mDateView.setText(mValues.get(position).getTitle());
+       /* try {
+            Date date= new Date(mValues.get(position).loadNotePartial().getAttributes().getShareDate());
+            holder.mTitleView.setText(date.toString());
+        } catch (EDAMUserException e) {
+            e.printStackTrace();
+        } catch (TException e) {
+            e.printStackTrace();
+        } catch (EDAMSystemException e) {
+            e.printStackTrace();
+        } catch (EDAMNotFoundException e) {
+            e.printStackTrace();
+        }*/
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,20 +108,20 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mDateView;
+        public final TextView mTitleView;
         public NoteRef mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mDateView = (TextView) view.findViewById(R.id.date);
+            mTitleView = (TextView) view.findViewById(R.id.title);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mTitleView.getText() + "'";
         }
     }
 

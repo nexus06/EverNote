@@ -40,6 +40,12 @@ public interface MVPNotes {
         void displayNotesResult(List<NoteRef> result);
 
         void showError(String cause);
+
+        void showProgress();
+
+        void dismisProgress();
+
+        NoteSortOrder getCurrentOrder();
     }
 
     /**
