@@ -194,10 +194,10 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         //mNotesPresenter.listNotebooksAsync();
 
         // mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
-        CreateNoteFragment a = new CreateNoteFragment();
-        a.show(getSupportFragmentManager(),"createDialog");
-
-
+        /*CreateNoteFragment createNoteFragment = new CreateNoteFragment();
+        createNoteFragment.show(getSupportFragmentManager(),"createDialog");
+*/
+        startActivity(CreateGestureNoteActivity.getLaunchIntent(this));
 
 
     }
