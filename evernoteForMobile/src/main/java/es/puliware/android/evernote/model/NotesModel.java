@@ -2,7 +2,12 @@ package es.puliware.android.evernote.model;
 
 import com.evernote.client.android.EvernoteSession;
 import com.evernote.client.android.asyncclient.*;
+import com.evernote.edam.error.EDAMNotFoundException;
+import com.evernote.edam.error.EDAMSystemException;
+import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.type.Note;
+import com.evernote.thrift.TException;
 import es.puliware.android.evernote.MVPNotes;
 
 import java.lang.ref.WeakReference;
@@ -17,7 +22,7 @@ import java.lang.ref.WeakReference;
  * acted upon by the "Presenter" and "View" layers in the MVP pattern.
  * It implements the MVP.ProvidedModelOps
  */
-public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedLoginModelOps{
+public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedModelOps{
 
     /**
      * tag for logging
@@ -34,7 +39,7 @@ public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedLog
      * A WeakReference used to access methods in the Presenter layer.
      * The WeakReference enables garbage collection.
      */
-    private WeakReference<MVPNotes.RequiredPresenterOps> mPresenter;
+    private WeakReference<MVPNotes.RequiredNotesPresenterOps> mPresenter;
     private EvernoteSession mEvernoteSession;
     private EvernoteNoteStoreClient noteStoreClient;
     private EvernoteUserStoreClient userData;
@@ -44,7 +49,7 @@ public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedLog
 
 
     @Override
-    public void onCreate(MVPNotes.RequiredPresenterOps presenter) {
+    public void onCreate(MVPNotes.RequiredNotesPresenterOps presenter) {
 
         //set weak reference to presenter
         mPresenter = new WeakReference<>(presenter);
@@ -83,6 +88,11 @@ public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedLog
     public void listNotesAsync(NoteFilter filter) {
          EvernoteSearchHelper.Search mSearch = new EvernoteSearchHelper.Search().
                 setOffset(0).setMaxNotes(Integer.MAX_VALUE).setNoteFilter(filter);
-        searchHelper.executeAsync(mSearch, (EvernoteCallback<EvernoteSearchHelper.Result>) mPresenter.get());
+        searchHelper.executeAsync(mSearch, mPresenter.get().getSearchCallback());
+    }
+
+    @Override
+    public void createNoteAsync(Note note) throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException {
+        noteStoreClient.createNoteAsync(note, mPresenter.get().getNoteCallback());
     }
 }

@@ -9,9 +9,13 @@ import android.util.Log;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.asyncclient.EvernoteSearchHelper;
 import com.evernote.client.android.type.NoteRef;
+import com.evernote.edam.error.EDAMNotFoundException;
+import com.evernote.edam.error.EDAMSystemException;
+import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
-import com.evernote.edam.type.Notebook;
+import com.evernote.thrift.TException;
 import es.puliware.android.evernote.MVPNotes;
 import es.puliware.android.evernote.model.NotesModel;
 
@@ -27,7 +31,7 @@ import java.util.List;
  * MVP.RequiredPresenterOps to decouple the MVP layers.
  *
  */
-public class UserNotesPresenter implements MVPNotes.ProvidedLoginPresenterOps, MVPNotes.RequiredPresenterOps, EvernoteCallback<EvernoteSearchHelper.Result>{
+public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, MVPNotes.RequiredNotesPresenterOps{
     /**
      * Tag for logging
      */
@@ -38,13 +42,15 @@ public class UserNotesPresenter implements MVPNotes.ProvidedLoginPresenterOps, M
      * A WeakReference used to access methods in the View layer.  The
      * WeakReference enables garbage collection.
      */
-    private WeakReference<MVPNotes.RequiredLoginViewOps> mView;
+    private WeakReference<MVPNotes.RequiredNotesViewOps> mView;
 
     private NotesModel mModelInstance;
+    private EvernoteCallback<EvernoteSearchHelper.Result> mSearchCallBack;
+    private EvernoteCallback<Note> mNoteCallBack;
 
 
     @Override
-    public void onCreate(MVPNotes.RequiredLoginViewOps view) {
+    public void onCreate(MVPNotes.RequiredNotesViewOps view) {
         // Set the WeakReference.
         mView = new WeakReference<>(view);
 
@@ -70,13 +76,57 @@ public class UserNotesPresenter implements MVPNotes.ProvidedLoginPresenterOps, M
      * @throws InstantiationException
      */
     private void initializeModel(Class<NotesModel> opsType,
-                                 MVPNotes.RequiredPresenterOps presenter)
+                                 MVPNotes.RequiredNotesPresenterOps presenter)
             throws InstantiationException, IllegalAccessException {
         // Create the ModelType object.
         mModelInstance = opsType.newInstance();
 
         // Perform the first initialization.
         mModelInstance.onCreate(presenter);
+        setSearchCallback();
+        setNoteCallback();
+
+    }
+
+    @Override
+    public void setSearchCallback(){
+        mSearchCallBack = new EvernoteCallback<EvernoteSearchHelper.Result>() {
+            @Override
+            public void onSuccess(EvernoteSearchHelper.Result result) {
+                displayNotesResult(result.getAllAsNoteRef());
+            }
+
+            @Override
+            public void onException(Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+                showError(e.getMessage());
+            }
+        };
+    }
+
+    @Override
+    public void setNoteCallback(){
+        mNoteCallBack = new EvernoteCallback<Note>() {
+            @Override
+            public void onSuccess(Note note) {
+
+            }
+
+            @Override
+            public void onException(Exception e) {
+
+            }
+        };
+    }
+
+    @Override
+    public EvernoteCallback<EvernoteSearchHelper.Result> getSearchCallback(){
+        return mSearchCallBack;
+    }
+
+    @Override
+    public EvernoteCallback<Note> getNoteCallback() {
+        return mNoteCallBack;
     }
 
 
@@ -92,7 +142,7 @@ public class UserNotesPresenter implements MVPNotes.ProvidedLoginPresenterOps, M
 
 
     @Override
-    public void onConfigurationChange(MVPNotes.RequiredLoginViewOps view) {
+    public void onConfigurationChange(MVPNotes.RequiredNotesViewOps view) {
 
     }
 
@@ -118,24 +168,32 @@ public class UserNotesPresenter implements MVPNotes.ProvidedLoginPresenterOps, M
         mModelInstance.listNotesAsync(noteFilter);
     }
 
+    @Override
+    public void createNoteAsync(Note note) {
+        try {
+            mModelInstance.createNoteAsync(note);
+        } catch (EDAMUserException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            showError(e.getMessage());
+        } catch (EDAMSystemException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            showError(e.getMessage());
+        } catch (TException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            showError(e.getMessage());
+        } catch (EDAMNotFoundException e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            showError(e.getMessage());
+        }
+    }
+
     /**
      * Return the initialized ProvidedOps instance for use by the
      * application.
      */
     @SuppressWarnings("unchecked")
-    public MVPNotes.ProvidedLoginModelOps getModel() {
-        return (MVPNotes.ProvidedLoginModelOps) mModelInstance;
-    }
-
-    @Override
-    public void onSuccess(EvernoteSearchHelper.Result result) {
-        displayNotesResult(result.getAllAsNoteRef());
-    }
-
-    @Override
-    public void onException(Exception e) {
-        Log.e(TAG, Log.getStackTraceString(e));
-        showError(e.getMessage());
+    public MVPNotes.ProvidedModelOps getModel() {
+        return (MVPNotes.ProvidedModelOps) mModelInstance;
     }
 
     @Override

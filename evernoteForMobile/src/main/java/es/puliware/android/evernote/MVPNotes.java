@@ -1,8 +1,15 @@
 package es.puliware.android.evernote;
 
+import com.evernote.client.android.asyncclient.EvernoteCallback;
+import com.evernote.client.android.asyncclient.EvernoteSearchHelper;
 import com.evernote.client.android.type.NoteRef;
+import com.evernote.edam.error.EDAMNotFoundException;
+import com.evernote.edam.error.EDAMSystemException;
+import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.notestore.NoteFilter;
+import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
+import com.evernote.thrift.TException;
 import es.puliware.android.evernote.utils.ContextView;
 import es.puliware.android.evernote.utils.LoginModelOps;
 import es.puliware.android.evernote.utils.LoginPresenterOps;
@@ -19,12 +26,12 @@ import java.util.List;
 public interface MVPNotes {
     /**
      * This interface defines the minimum API needed by the
-     * LoginUserPresenter class in the Presenter layer to interact with
-     * LoginActivity in the View layer.  It extends the
+     * UserNotesPresenter class in the Presenter layer to interact with
+     * ItemListActivity in the View layer.  It extends the
      * ContextView interface so the Presentation layer can access
      * Context's defined in the View layer.
      */
-    public interface RequiredLoginViewOps
+    public interface RequiredNotesViewOps
             extends ContextView {
         /**
          *
@@ -37,14 +44,11 @@ public interface MVPNotes {
 
     /**
      * This interface defines the minimum public API provided by the
-     * UserLoginPresenter class in the Presenter layer to the
-     * LoginActivity in the View layer.  It extends the
-     * PresenterOps interface, which is instantiated by the
-     * MVP.RequiredViewOps
+     * UserNotesPresenter class in the Presenter layer to the
+     * ItemListActivity in the View layer.
      */
-    public interface ProvidedLoginPresenterOps
-            extends LoginPresenterOps<RequiredLoginViewOps> {
-
+    public interface ProvidedNotesPresenterOps
+            extends LoginPresenterOps<RequiredNotesViewOps> {
         /**
          *Check if user already logged in
          * @return false if already logged in
@@ -55,17 +59,23 @@ public interface MVPNotes {
 
         void listNotesAsync(NoteSortOrder order);
 
+        void createNoteAsync(Note note);
+
+        void setNoteCallback();
+        void setSearchCallback();
+
     }
 
     /**
      * This interface defines the minimum API needed by the
-     * LoginModel class in the Model layer to interact with
-     * LoginPresenter class in the Presenter layer.  Since this
-     * interface is identical to the one used by the RequiredLogginViewOps
-     * interface it simply extends it.
+     * NotesModel class in the Model layer to interact with
+     * NotesPresenter class in the Presenter layer.
      */
-    public interface RequiredPresenterOps
-            extends RequiredLoginViewOps {
+    public interface RequiredNotesPresenterOps
+            extends RequiredNotesViewOps {
+        EvernoteCallback<EvernoteSearchHelper.Result> getSearchCallback();
+
+        EvernoteCallback<Note> getNoteCallback();
     }
 
     /**
@@ -75,8 +85,8 @@ public interface MVPNotes {
      * interface, which is parameterized by the
      * MVP.RequiredPresenterOps interface
      */
-    public interface ProvidedLoginModelOps
-            extends LoginModelOps<RequiredPresenterOps> {
+    public interface ProvidedModelOps
+            extends LoginModelOps<RequiredNotesPresenterOps> {
 
         /**
          *Check if user already logged in
@@ -87,6 +97,8 @@ public interface MVPNotes {
         boolean logout();
 
         void listNotesAsync(NoteFilter filter);
+
+        void createNoteAsync(Note note) throws EDAMUserException, EDAMSystemException, TException, EDAMNotFoundException;
 
     }
 }

@@ -30,7 +30,7 @@ import java.util.List;
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class ItemListActivity extends AppCompatActivity implements MVPNotes.RequiredLoginViewOps {
+public class ItemListActivity extends AppCompatActivity implements MVPNotes.RequiredNotesViewOps, View.OnClickListener {
 
     /**
      * Tag for logging
@@ -79,20 +79,13 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        assert toolbar != null;
         toolbar.setTitle(getTitle());
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                //mNotesPresenter.listNotebooksAsync();
-
-                mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
-
-            }
-        });
+        assert fab != null;
+        fab.setOnClickListener(this);
 
 
         // Create the UserNotes object one time.
@@ -134,6 +127,13 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     public void showError(String cause) {
         Snackbar.make(recyclerView, cause,
                 Snackbar.LENGTH_LONG).setAction("Action", null).show();
+    }
+
+    @Override
+    public void onClick(View view) {
+        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        //mNotesPresenter.listNotebooksAsync();
+         mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
     }
 
 
