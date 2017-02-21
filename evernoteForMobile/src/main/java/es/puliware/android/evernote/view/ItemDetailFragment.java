@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import es.puliware.android.evernote.R;
+import es.puliware.android.evernote.utils.Utils;
 import es.puliware.android.evernote.view.dummy.DummyContent;
 
 /**
@@ -61,7 +62,7 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(Html.fromHtml(mItem));
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(Utils.getFormatedContent(mItem));
         }
         return rootView;
     }

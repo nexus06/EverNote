@@ -54,18 +54,6 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mDateView.setText(mValues.get(position).getTitle());
-       /* try {
-            Date date= new Date(mValues.get(position).loadNotePartial().getAttributes().getShareDate());
-            holder.mTitleView.setText(date.toString());
-        } catch (EDAMUserException e) {
-            e.printStackTrace();
-        } catch (TException e) {
-            e.printStackTrace();
-        } catch (EDAMSystemException e) {
-            e.printStackTrace();
-        } catch (EDAMNotFoundException e) {
-            e.printStackTrace();
-        }*/
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,6 +82,7 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
                     @Override
                     public void onException(Exception e) {
                         ((ItemListActivity)context.get()).dismisProgress();
+                        ((ItemListActivity)context.get()).showError(e.getMessage());
                         Log.e(TAG, Log.getStackTraceString(e));
 
                     }

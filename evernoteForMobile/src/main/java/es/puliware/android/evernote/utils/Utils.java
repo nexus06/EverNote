@@ -1,9 +1,15 @@
 package es.puliware.android.evernote.utils;
 
+import android.text.Html;
+import android.text.Spanned;
 import com.evernote.client.android.EvernoteUtil;
 
 /**
  * Created by nexus07 on 21/02/17.
+ *
+ * @class Utils
+ *
+ * @brief Helper methods shared by various Activities.
  */
 public class Utils {
 
@@ -15,4 +21,7 @@ public class Utils {
         return processedContent.toString();
     }
 
+    public static Spanned getFormatedContent(String mItem) {
+        return Html.fromHtml(mItem);
+    }
 }

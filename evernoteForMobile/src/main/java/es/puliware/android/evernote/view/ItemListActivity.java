@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +44,9 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     public static final int CREATE_NOTE_REQUEST = 1;
     public static final String TITLE_EXTRA = "TITLE_EXTRA";
     public static final String CONTENT_EXTRA = "CONTENT_EXTRA";
+    private static final String RETAINED_FRAGMENT_TAG = "RETAINED_FRAGMENT_TAG";
+    private static final String ORDER_KEY = "ORDER_KEY";
+
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -60,6 +64,8 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
 
     SwipeRefreshLayout mProgressView;
     private NoteSortOrder curOrder = NoteSortOrder.CREATED;
+    private RetainedFragment mDataFragment;
+
 
     public static Intent getLaunchIntent(Context context){
         return new Intent(context, ItemListActivity.class);
@@ -78,11 +84,13 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         switch (item.getItemId()) {
             case R.id.action_order_title:
                 curOrder = NoteSortOrder.TITLE;
+                saveOrder();
                 mNotesPresenter.listNotesAsync(curOrder);
                 return true;
 
             case R.id.action_order_date:
                 curOrder = NoteSortOrder.CREATED;
+                saveOrder();
                 mNotesPresenter.listNotesAsync(curOrder);
                 return true;
 
@@ -98,10 +106,29 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         setContentView(R.layout.activity_item_list);
         initUIControls();
 
+        // find the retained fragment on activity starts/restarts
+        FragmentManager fm = getSupportFragmentManager();
+        mDataFragment = (RetainedFragment) fm.findFragmentByTag(RETAINED_FRAGMENT_TAG);
+
+        // create the fragment and data the first time
+        if (mDataFragment == null) {
+            // add the fragment
+            mDataFragment = new RetainedFragment();
+            fm.beginTransaction().add(mDataFragment, RETAINED_FRAGMENT_TAG).commit();
+            //
+            saveOrder();
+        }else {
+            curOrder = mDataFragment.get(ORDER_KEY);
+        }
+
         // Create the UserNotes object one time.
         mNotesPresenter = new UserNotesPresenter();
         mNotesPresenter.onCreate(this);
-        mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
+        mNotesPresenter.listNotesAsync(curOrder);
+    }
+
+    private void saveOrder(){
+        mDataFragment.put(ORDER_KEY, curOrder);
     }
 
 
