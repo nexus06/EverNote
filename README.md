@@ -43,7 +43,7 @@ Note content: Depending on screen size: new activity for smalls screen and fragm
 
 #Feature create note by keyboard:
 
-Pressing floating button "+", naw activity is called, then user is able to create note by keyoboard or by hand writing in screen.
+Pressing floating button "+", new activity is called, then user is able to create note by keyoboard or by hand writing in screen.
 
 #Feature create note by keyboard:
 
