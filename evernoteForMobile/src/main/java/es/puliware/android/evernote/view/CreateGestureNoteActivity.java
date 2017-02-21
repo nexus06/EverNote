@@ -9,25 +9,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import es.puliware.android.evernote.R;
 
 import java.util.ArrayList;
 
 /**
- * An activity representing a single Item detail screen. This
- * activity is only used narrow width devices. On tablet-size devices,
- * item details are presented side-by-side with a list of items
+ * An activity representing a single screen for create Note by edit text/ gestures
+ *
  * in a {@link ItemListActivity}.
  */
-public class CreateGestureNoteActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener, View.OnFocusChangeListener, View.OnClickListener {
+public class CreateGestureNoteActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener, View.OnFocusChangeListener {
 
     private GestureLibrary gestureLibrary;
     private EditText title;
     private EditText content;
     private EditText mOutputView;
-    private Button createNote;
+    //prediction threshold < 1 is too low
+    private static final int threshold= 1;
 
 
     @Override
@@ -71,25 +70,6 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         }
     }
 
-    @Override
-    public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
-        ArrayList<Prediction> predictions = gestureLibrary.recognize(gesture);
-        //inferior a 1 demasiado baja
-        int threshold = 1;
-        Prediction maxPredictionScored = null;
-        for(Prediction prediction: predictions){
-            if(prediction.score > threshold && maxPredictionScored!=null && maxPredictionScored.score<prediction.score){
-                maxPredictionScored = prediction;
-            }else if (maxPredictionScored==null){
-                maxPredictionScored = prediction;
-            }
-
-        }
-        if(maxPredictionScored!=null){
-            mOutputView.append(maxPredictionScored.name);
-        }
-    }
-
     public static Intent getLaunchIntent(Context context) {
         return new Intent(context, CreateGestureNoteActivity.class);
     }
@@ -109,11 +89,6 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         }
     }
 
-    @Override
-    public void onClick(View view) {
-
-
-    }
 
     private void createNote(){
         String titleStr = title.getText().toString();
@@ -133,6 +108,24 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         returnIntent.putExtra(ItemListActivity.CONTENT_EXTRA,contentStr);
         return returnIntent;
 
+    }
+
+    @Override
+    public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+        ArrayList<Prediction> predictions = gestureLibrary.recognize(gesture);
+
+        Prediction maxPredictionScored = null;
+        for(Prediction prediction: predictions){
+            if(prediction.score > threshold && maxPredictionScored!=null && maxPredictionScored.score<prediction.score){
+                maxPredictionScored = prediction;
+            }else if (maxPredictionScored==null){
+                maxPredictionScored = prediction;
+            }
+
+        }
+        if(maxPredictionScored!=null){
+            mOutputView.append(maxPredictionScored.name);
+        }
     }
 
 

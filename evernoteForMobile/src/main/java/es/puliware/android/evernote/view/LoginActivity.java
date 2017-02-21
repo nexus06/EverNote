@@ -32,12 +32,6 @@ public class LoginActivity extends AppCompatActivity implements
 
     }
 
-
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    private static final int REQUEST_READ_CONTACTS = 0;
-
     /**
      * Provides userlogin-related operations.
      */
@@ -45,7 +39,6 @@ public class LoginActivity extends AppCompatActivity implements
 
     // UI references.
     private ScrollView mLoginLayout;
-    private View mProgressView;
     private Button mLoginBtn;
     private Button mExitBtn;
 
@@ -63,10 +56,8 @@ public class LoginActivity extends AppCompatActivity implements
 
     private void initUIControls() {
        mLoginLayout = (ScrollView) findViewById(R.id.login_form);
-       mProgressView = findViewById(R.id.bg_progress);
        mLoginBtn = (Button) findViewById(R.id.sign_in_button);
        mExitBtn = (Button) findViewById(R.id.exit_button);
-
         mLoginBtn.setOnClickListener(this);
         mExitBtn.setOnClickListener(this);
     }
@@ -96,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements
         if (successful) {
             Toast.makeText(this,"login succesed", Toast.LENGTH_LONG).show();
             startActivity(ItemListActivity.getLaunchIntent(this));
+            finish();
         } else {
             mLoginLayout.setVisibility(View.VISIBLE);
         }

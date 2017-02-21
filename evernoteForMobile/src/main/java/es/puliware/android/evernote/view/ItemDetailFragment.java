@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import es.puliware.android.evernote.R;
 import es.puliware.android.evernote.utils.Utils;
-import es.puliware.android.evernote.view.dummy.DummyContent;
 
 /**
  * A fragment representing a single Item detail screen.

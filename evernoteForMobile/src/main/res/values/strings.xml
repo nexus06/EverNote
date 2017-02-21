@@ -23,4 +23,10 @@
     <string name="create_note">Create note</string>
     <string name="empty">Can\'t be empty</string>
     <string name="gestures">Or try with gestures</string>
+    <string name="ok">ok</string>
+    <string name="cancel">cancel</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="logout">Logout</string>
+    <string name="are_you_sure_logout">Log out session?</string>
 </resources>

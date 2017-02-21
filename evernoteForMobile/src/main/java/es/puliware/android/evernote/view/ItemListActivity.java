@@ -250,4 +250,29 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         }
     }
 
+    @Override
+    public void onBackPressed() {
+            performLogout();
+    }
+
+    /**
+     * choose keep session or not
+     * */
+    private void performLogout() {
+        SimpleFragmentConfirmationDialog dialog =
+                new SimpleFragmentConfirmationDialog(R.string.logout,
+                        R.string.are_you_sure_logout) {
+                    @Override
+                    public void cancel() {
+                        finish();
+                    }
+                    @Override
+                    public void ok() {
+                       mNotesPresenter.logout();
+                        finish();
+                    }
+                };
+        dialog.show(getFragmentManager(), "logOutDialog");
+    }
+
 }
