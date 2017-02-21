@@ -48,8 +48,7 @@
         </activity>
         <activity
             android:name=".view.CreateGestureNoteActivity"
-            android:label="@string/create_note"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/create_note"></activity>
     </application>
 
 </manifest>

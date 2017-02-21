@@ -85,7 +85,6 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
         mModelInstance.onCreate(presenter);
         setSearchCallback();
         setNoteCallback();
-
     }
 
     @Override
@@ -114,7 +113,6 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
 
     @Override
     public void setNoteCallback(){
-
         mNoteCallBack = new EvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note note) {
@@ -182,8 +180,8 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
     public void createNoteAsync(Note note) {
 
         try {
-            mModelInstance.createNoteAsync(note);
             showProgress();
+            mModelInstance.createNoteAsync(note);
         } catch (EDAMUserException e) {
             Log.e(TAG, Log.getStackTraceString(e));
             showError(e.getMessage());

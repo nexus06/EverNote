@@ -53,9 +53,6 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
      */
     private UserNotesPresenter mNotesPresenter;
 
-
-
-
     /**
      * mantains notes elements
      */
@@ -194,12 +191,6 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
 
     @Override
     public void onClick(View view) {
-        //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-        //mNotesPresenter.listNotebooksAsync();
-
-        // mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
-        /*CreateNoteFragment createNoteFragment = new CreateNoteFragment();
-        createNoteFragment.show(getSupportFragmentManager(),"createDialog");*/
         startActivityForResult(CreateGestureNoteActivity.getLaunchIntent(this), CREATE_NOTE_REQUEST);
     }
 

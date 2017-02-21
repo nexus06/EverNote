@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements
             mLoginPresenter.displayLoginResult(true, "testing API");
             /*//TODO remove at end version
             mLoginPresenter.logout();*/
+            finish();
 
         }else {
             mLoginPresenter.authenticate();

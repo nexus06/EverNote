@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.gesture.*;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,20 +38,37 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         if (savedInstanceState == null) {
             //TODO check
         }
-
-        gestureLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
-        if(!gestureLibrary.load()){
-            finish();
-        }
-
-        GestureOverlayView gestureOverlayView = (GestureOverlayView) findViewById(R.id.gestureLayout);
-        gestureOverlayView.addOnGesturePerformedListener(this);
         title = (EditText)findViewById(R.id.title);
         content = (EditText) findViewById(R.id.content);
         title.setOnFocusChangeListener(this);
         content.setOnFocusChangeListener(this);
-        createNote = (Button)findViewById(R.id.create);
-        createNote.setOnClickListener(this);
+        loadGesturesLibrary();
+    }
+
+    private void loadGesturesLibrary() {
+        gestureLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
+        gestureLibrary.load();
+        GestureOverlayView gestureOverlayView = (GestureOverlayView) findViewById(R.id.gestureLayout);
+        gestureOverlayView.addOnGesturePerformedListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.create_note_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_create:
+                createNote();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -93,18 +112,29 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
     @Override
     public void onClick(View view) {
 
+
+    }
+
+    private void createNote(){
         String titleStr = title.getText().toString();
         String contentStr = content.getText().toString();
         if(!titleStr.isEmpty()&&!contentStr.isEmpty()){
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra(ItemListActivity.TITLE_EXTRA,titleStr);
-            returnIntent.putExtra(ItemListActivity.CONTENT_EXTRA,contentStr);
-            setResult(Activity.RESULT_OK,returnIntent);
+            setResult(Activity.RESULT_OK,getResultIntent(titleStr, contentStr));
             finish();
         }else {
             title.setError(getString(R.string.empty));
             content.setError(getString(R.string.empty));
         }
+    }
+
+    private Intent getResultIntent(String titleStr, String contentStr){
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(ItemListActivity.TITLE_EXTRA,titleStr);
+        returnIntent.putExtra(ItemListActivity.CONTENT_EXTRA,contentStr);
+        return returnIntent;
 
     }
+
+
+
 }
