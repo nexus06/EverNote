@@ -22,13 +22,12 @@ import java.lang.ref.WeakReference;
  * acted upon by the "Presenter" and "View" layers in the MVP pattern.
  * It implements the MVP.ProvidedModelOps
  */
-public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedModelOps{
+public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedModelOps {
 
     /**
      * tag for logging
      */
-    protected final static String TAG =
-            NotesModel.class.getSimpleName();
+    protected final static String TAG = NotesModel.class.getSimpleName();
 
 
     private static final boolean SUPPORT_APP_LINKED_NOTEBOOKS = true;
@@ -54,11 +53,7 @@ public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedMod
         //set weak reference to presenter
         mPresenter = new WeakReference<>(presenter);
 
-        mEvernoteSession = new EvernoteSession.Builder(mPresenter.get().getApplicationContext())
-                .setEvernoteService(EVERNOTE_SERVICE)
-                .setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS)
-                .build(CONSUMER_KEY, CONSUMER_SECRET)
-                .asSingleton();
+        mEvernoteSession = new EvernoteSession.Builder(mPresenter.get().getApplicationContext()).setEvernoteService(EVERNOTE_SERVICE).setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS).build(CONSUMER_KEY, CONSUMER_SECRET).asSingleton();
 
         //Create an EvernoteNoteStoreClient to access primary methods for personal note data
         noteStoreClient = mEvernoteSession.getEvernoteClientFactory().getNoteStoreClient();
@@ -82,17 +77,17 @@ public class NotesModel extends GenericEverModel implements MVPNotes.ProvidedMod
 
     @Override
     public void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback) {
-        noteStoreClient.getNoteAsync(guid,withContent,false,false,false,callback);
+        noteStoreClient.getNoteAsync(guid, withContent, false, false, false, callback);
     }
 
     @Override
     public boolean logout() {
-       return mEvernoteSession.logOut();
+        return mEvernoteSession.logOut();
     }
 
     @Override
     public void listNotesAsync(NoteFilter filter) {
-         EvernoteSearchHelper.Search mSearch = new EvernoteSearchHelper.Search().
+        EvernoteSearchHelper.Search mSearch = new EvernoteSearchHelper.Search().
                 setOffset(0).setMaxNotes(Integer.MAX_VALUE).setNoteFilter(filter);
         searchHelper.executeAsync(mSearch, mPresenter.get().getSearchCallback());
     }

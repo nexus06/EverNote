@@ -31,10 +31,8 @@ public interface MVPNotes {
      * ContextView interface so the Presentation layer can access
      * Context's defined in the View layer.
      */
-    public interface RequiredNotesViewOps
-            extends ContextView {
+    public interface RequiredNotesViewOps extends ContextView {
         /**
-         *
          * @param result
          */
         void displayNotesResult(List<NoteRef> result);
@@ -53,10 +51,10 @@ public interface MVPNotes {
      * UserNotesPresenter class in the Presenter layer to the
      * ItemListActivity in the View layer.
      */
-    public interface ProvidedNotesPresenterOps
-            extends LoginPresenterOps<RequiredNotesViewOps> {
+    public interface ProvidedNotesPresenterOps extends LoginPresenterOps<RequiredNotesViewOps> {
         /**
-         *Check if user already logged in
+         * Check if user already logged in
+         *
          * @return false if already logged in
          */
         boolean isLoggedIn();
@@ -80,8 +78,7 @@ public interface MVPNotes {
      * NotesModel class in the Model layer to interact with
      * NotesPresenter class in the Presenter layer.
      */
-    public interface RequiredNotesPresenterOps
-            extends RequiredNotesViewOps {
+    public interface RequiredNotesPresenterOps extends RequiredNotesViewOps {
         EvernoteCallback<EvernoteSearchHelper.Result> getSearchCallback();
 
         EvernoteCallback<Note> getNoteCallback();
@@ -94,11 +91,11 @@ public interface MVPNotes {
      * interface, which is parameterized by the
      * MVP.RequiredPresenterOps interface
      */
-    public interface ProvidedModelOps
-            extends LoginModelOps<RequiredNotesPresenterOps> {
+    public interface ProvidedModelOps extends LoginModelOps<RequiredNotesPresenterOps> {
 
         /**
-         *Check if user already logged in
+         * Check if user already logged in
+         *
          * @return false if already logged in
          */
         boolean isLoggedIn();

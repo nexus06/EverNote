@@ -17,13 +17,12 @@ import java.lang.ref.WeakReference;
  * It implements the MVP.ProvidedModelOps so it can be created/managed
  * by the GenericModel framework.
  */
-public class UserModel extends GenericEverModel implements MVPLogin.ProvidedLoginModelOps{
+public class UserModel extends GenericEverModel implements MVPLogin.ProvidedLoginModelOps {
 
     /**
      * tag for logging
      */
-    protected final static String TAG =
-            UserModel.class.getSimpleName();
+    protected final static String TAG = UserModel.class.getSimpleName();
 
     /*Set up an EvernoteSession
     * Define your app credentials (key, secret, and host). See {@linktourl http://dev.evernote.com/documentation/cloud/}
@@ -46,11 +45,7 @@ public class UserModel extends GenericEverModel implements MVPLogin.ProvidedLogi
         //set weak reference to presenter
         mPresenter = new WeakReference<>(presenter);
 
-        mEvernoteSession = new EvernoteSession.Builder(mPresenter.get().getApplicationContext())
-                .setEvernoteService(EVERNOTE_SERVICE)
-                .setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS)
-                .build(CONSUMER_KEY, CONSUMER_SECRET)
-                .asSingleton();
+        mEvernoteSession = new EvernoteSession.Builder(mPresenter.get().getApplicationContext()).setEvernoteService(EVERNOTE_SERVICE).setSupportAppLinkedNotebooks(SUPPORT_APP_LINKED_NOTEBOOKS).build(CONSUMER_KEY, CONSUMER_SECRET).asSingleton();
     }
 
     @Override
@@ -70,6 +65,6 @@ public class UserModel extends GenericEverModel implements MVPLogin.ProvidedLogi
 
     @Override
     public boolean logout() {
-       return mEvernoteSession.logOut();
+        return mEvernoteSession.logOut();
     }
 }

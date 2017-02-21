@@ -19,17 +19,12 @@ public interface MVPLogin {
      * ContextView interface so the Presentation layer can access
      * Context's defined in the View layer.
      */
-    public interface RequiredLoginViewOps
-            extends ContextView {
+    public interface RequiredLoginViewOps extends ContextView {
         /**
-         *
-         * @param result
-         *        if successed.
-         *@param failureReason
-         *
+         * @param result        if successed.
+         * @param failureReason
          */
-        void displayLoginResult(boolean result,
-                            String failureReason);
+        void displayLoginResult(boolean result, String failureReason);
 
         void onLoginFinished(boolean successful);
     }
@@ -41,15 +36,15 @@ public interface MVPLogin {
      * PresenterOps interface, which is instantiated by the
      * MVP.RequiredViewOps
      */
-    public interface ProvidedLoginPresenterOps
-            extends LoginPresenterOps<RequiredLoginViewOps> {
+    public interface ProvidedLoginPresenterOps extends LoginPresenterOps<RequiredLoginViewOps> {
         /**
          * Initiate authenticate process
          */
         void authenticate();
 
         /**
-         *Check if user already logged in
+         * Check if user already logged in
+         *
          * @return false if already logged in
          */
         boolean isLoggedIn();
@@ -64,8 +59,7 @@ public interface MVPLogin {
      * interface is identical to the one used by the RequiredLogginViewOps
      * interface it simply extends it.
      */
-    public interface RequiredPresenterOps
-            extends RequiredLoginViewOps {
+    public interface RequiredPresenterOps extends RequiredLoginViewOps {
     }
 
     /**
@@ -75,15 +69,15 @@ public interface MVPLogin {
      * interface, which is parameterized by the
      * MVP.RequiredPresenterOps interface
      */
-    public interface ProvidedLoginModelOps
-            extends LoginModelOps<RequiredPresenterOps> {
+    public interface ProvidedLoginModelOps extends LoginModelOps<RequiredPresenterOps> {
         /**
          * log in process
          */
         void authenticate();
 
         /**
-         *Check if user already logged in
+         * Check if user already logged in
+         *
          * @return false if already logged in
          */
         boolean isLoggedIn();

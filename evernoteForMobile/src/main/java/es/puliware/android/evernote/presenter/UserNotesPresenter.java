@@ -29,9 +29,8 @@ import java.util.List;
  * display in the View (e.g., LoginActivity).  It
  * implements  It implements MVP.ProvidedLoginPresenterOps and
  * MVP.RequiredPresenterOps to decouple the MVP layers.
- *
  */
-public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, MVPNotes.RequiredNotesPresenterOps{
+public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, MVPNotes.RequiredNotesPresenterOps {
     /**
      * Tag for logging
      */
@@ -72,12 +71,11 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
 
     /**
      * Initialize the model fields.
+     *
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private void initializeModel(Class<NotesModel> opsType,
-                                 MVPNotes.RequiredNotesPresenterOps presenter)
-            throws InstantiationException, IllegalAccessException {
+    private void initializeModel(Class<NotesModel> opsType, MVPNotes.RequiredNotesPresenterOps presenter) throws InstantiationException, IllegalAccessException {
         // Create the ModelType object.
         mModelInstance = opsType.newInstance();
 
@@ -88,7 +86,7 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
     }
 
     @Override
-    public void setSearchCallback(){
+    public void setSearchCallback() {
         mSearchCallBack = new EvernoteCallback<EvernoteSearchHelper.Result>() {
             @Override
             public void onSuccess(EvernoteSearchHelper.Result result) {
@@ -108,11 +106,11 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
     @Override
     public void getNoteAsync(String guid, boolean withContent, EvernoteCallback<Note> callback) {
         showProgress();
-        mModelInstance.getNoteAsync(guid,withContent,callback);
+        mModelInstance.getNoteAsync(guid, withContent, callback);
     }
 
     @Override
-    public void setNoteCallback(){
+    public void setNoteCallback() {
         mNoteCallBack = new EvernoteCallback<Note>() {
             @Override
             public void onSuccess(Note note) {
@@ -127,7 +125,7 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
     }
 
     @Override
-    public EvernoteCallback<EvernoteSearchHelper.Result> getSearchCallback(){
+    public EvernoteCallback<EvernoteSearchHelper.Result> getSearchCallback() {
         return mSearchCallBack;
     }
 
@@ -165,7 +163,7 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
 
     @Override
     public boolean logout() {
-       return mModelInstance.logout();
+        return mModelInstance.logout();
     }
 
     @Override

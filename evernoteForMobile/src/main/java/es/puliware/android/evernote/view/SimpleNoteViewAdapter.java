@@ -11,15 +11,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.type.NoteRef;
-import com.evernote.edam.error.EDAMNotFoundException;
-import com.evernote.edam.error.EDAMSystemException;
-import com.evernote.edam.error.EDAMUserException;
 import com.evernote.edam.type.Note;
-import com.evernote.thrift.TException;
 import es.puliware.android.evernote.R;
 
 import java.lang.ref.WeakReference;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,7 +34,7 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
     public SimpleNoteViewAdapter(List<NoteRef> items, boolean mTwoPane, FragmentActivity context) {
         this.mValues = items;
         this.mTwoPane = mTwoPane;
-        this.context =  new WeakReference<>(context);
+        this.context = new WeakReference<>(context);
 
     }
 
@@ -62,7 +57,7 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
                 callBack = new EvernoteCallback<Note>() {
                     @Override
                     public void onSuccess(Note note) {
-                        ((ItemListActivity)context.get()).dismisProgress();
+                        ((ItemListActivity) context.get()).dismisProgress();
                         if (mTwoPane) {
                             Bundle arguments = new Bundle();
                             arguments.putString(ItemDetailFragment.ARG_ITEM_ID, note.getContent());
@@ -81,14 +76,14 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
 
                     @Override
                     public void onException(Exception e) {
-                        ((ItemListActivity)context.get()).dismisProgress();
-                        ((ItemListActivity)context.get()).showError(e.getMessage());
+                        ((ItemListActivity) context.get()).dismisProgress();
+                        ((ItemListActivity) context.get()).showError(e.getMessage());
                         Log.e(TAG, Log.getStackTraceString(e));
 
                     }
                 };
 
-                ((ItemListActivity)context.get()).getNote(holder.mItem.getGuid(), true, SimpleNoteViewAdapter.callBack);
+                ((ItemListActivity) context.get()).getNote(holder.mItem.getGuid(), true, SimpleNoteViewAdapter.callBack);
 
             }
         });

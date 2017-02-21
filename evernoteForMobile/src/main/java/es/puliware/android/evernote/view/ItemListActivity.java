@@ -4,24 +4,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
-import android.view.*;
-
-import com.evernote.client.android.EvernoteUtil;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import com.evernote.client.android.asyncclient.EvernoteCallback;
 import com.evernote.client.android.type.NoteRef;
 import com.evernote.edam.type.Note;
 import com.evernote.edam.type.NoteSortOrder;
 import es.puliware.android.evernote.MVPNotes;
 import es.puliware.android.evernote.R;
-
 import es.puliware.android.evernote.presenter.UserNotesPresenter;
 import es.puliware.android.evernote.utils.Utils;
 
@@ -37,16 +36,16 @@ import java.util.List;
  */
 public class ItemListActivity extends AppCompatActivity implements MVPNotes.RequiredNotesViewOps, View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
+    public static final int CREATE_NOTE_REQUEST = 1;
+    public static final String TITLE_EXTRA = "TITLE_EXTRA";
+    public static final String CONTENT_EXTRA = "CONTENT_EXTRA";
     /**
      * Tag for logging
      */
     protected final static String TAG = ItemListActivity.class.getSimpleName();
-    public static final int CREATE_NOTE_REQUEST = 1;
-    public static final String TITLE_EXTRA = "TITLE_EXTRA";
-    public static final String CONTENT_EXTRA = "CONTENT_EXTRA";
     private static final String RETAINED_FRAGMENT_TAG = "RETAINED_FRAGMENT_TAG";
     private static final String ORDER_KEY = "ORDER_KEY";
-
+    SwipeRefreshLayout mProgressView;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -56,18 +55,15 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
      * Provides usernotes-related operations.
      */
     private UserNotesPresenter mNotesPresenter;
-
     /**
      * mantains notes elements
      */
     private RecyclerView recyclerView;
-
-    SwipeRefreshLayout mProgressView;
     private NoteSortOrder curOrder = NoteSortOrder.CREATED;
     private RetainedFragment mDataFragment;
 
 
-    public static Intent getLaunchIntent(Context context){
+    public static Intent getLaunchIntent(Context context) {
         return new Intent(context, ItemListActivity.class);
     }
 
@@ -117,7 +113,7 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
             fm.beginTransaction().add(mDataFragment, RETAINED_FRAGMENT_TAG).commit();
             //
             saveOrder();
-        }else {
+        } else {
             curOrder = mDataFragment.get(ORDER_KEY);
         }
 
@@ -127,7 +123,7 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
         mNotesPresenter.listNotesAsync(curOrder);
     }
 
-    private void saveOrder(){
+    private void saveOrder() {
         mDataFragment.put(ORDER_KEY, curOrder);
     }
 
@@ -167,9 +163,8 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     }
 
 
-
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
-       // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
+        // recyclerView.setAdapter(new SimpleItemRecyclerViewAdapter(DummyContent.ITEMS));
     }
 
     @Override
@@ -179,23 +174,23 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
 
     @Override
     public void displayNotesResult(List<NoteRef> result) {
-        Log.d(TAG, "successed getting notes--->"+result.size());
+        Log.d(TAG, "successed getting notes--->" + result.size());
 
-        recyclerView.setAdapter(new SimpleNoteViewAdapter(result,mTwoPane,this));
+        recyclerView.setAdapter(new SimpleNoteViewAdapter(result, mTwoPane, this));
         recyclerView.getAdapter().notifyDataSetChanged();
 
     }
 
     @Override
     public void showError(String cause) {
-        Snackbar.make(recyclerView, cause,
-                Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Snackbar.make(recyclerView, cause, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
     @Override
     public void showProgress() {
         mProgressView.post(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 mProgressView.setRefreshing(true);
             }
         });
@@ -204,7 +199,8 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     @Override
     public void dismisProgress() {
         mProgressView.post(new Runnable() {
-            @Override public void run() {
+            @Override
+            public void run() {
                 mProgressView.setRefreshing(false);
             }
         });
@@ -252,26 +248,25 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
 
     @Override
     public void onBackPressed() {
-            performLogout();
+        performLogout();
     }
 
     /**
      * choose keep session or not
-     * */
+     */
     private void performLogout() {
-        SimpleFragmentConfirmationDialog dialog =
-                new SimpleFragmentConfirmationDialog(R.string.logout,
-                        R.string.are_you_sure_logout) {
-                    @Override
-                    public void cancel() {
-                        finish();
-                    }
-                    @Override
-                    public void ok() {
-                       mNotesPresenter.logout();
-                        finish();
-                    }
-                };
+        SimpleFragmentConfirmationDialog dialog = new SimpleFragmentConfirmationDialog(R.string.logout, R.string.are_you_sure_logout) {
+            @Override
+            public void cancel() {
+                finish();
+            }
+
+            @Override
+            public void ok() {
+                mNotesPresenter.logout();
+                finish();
+            }
+        };
         dialog.show(getFragmentManager(), "logOutDialog");
     }
 

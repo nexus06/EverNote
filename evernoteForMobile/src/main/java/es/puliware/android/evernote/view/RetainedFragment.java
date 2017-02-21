@@ -13,8 +13,7 @@ public class RetainedFragment extends Fragment {
     /**
      * Maps keys to objects.
      */
-    private HashMap<String, Object> mData =
-            new HashMap<String, Object>();
+    private HashMap<String, Object> mData = new HashMap<String, Object>();
 
     // this method is only called once for this fragment
     @Override
@@ -25,7 +24,7 @@ public class RetainedFragment extends Fragment {
     }
 
     public void put(String key, Object value) {
-        mData.put(key,value);
+        mData.put(key, value);
     }
 
     public <T> T get(String key) {

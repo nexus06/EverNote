@@ -17,9 +17,8 @@ import java.lang.ref.WeakReference;
  * display in the View (e.g., LoginActivity).  It
  * implements  It implements MVP.ProvidedLoginPresenterOps and
  * MVP.RequiredPresenterOps to decouple the MVP layers.
- *
  */
-public class UserLoginPresenter implements MVPLogin.ProvidedLoginPresenterOps, MVPLogin.RequiredPresenterOps{
+public class UserLoginPresenter implements MVPLogin.ProvidedLoginPresenterOps, MVPLogin.RequiredPresenterOps {
     /**
      * Tag for logging
      */
@@ -58,12 +57,11 @@ public class UserLoginPresenter implements MVPLogin.ProvidedLoginPresenterOps, M
 
     /**
      * Initialize the model fields.
+     *
      * @throws IllegalAccessException
      * @throws InstantiationException
      */
-    private void initializeModel(Class<UserModel> opsType,
-                                 MVPLogin.RequiredPresenterOps presenter)
-            throws InstantiationException, IllegalAccessException {
+    private void initializeModel(Class<UserModel> opsType, MVPLogin.RequiredPresenterOps presenter) throws InstantiationException, IllegalAccessException {
         // Create the ModelType object.
         mModelInstance = opsType.newInstance();
 
@@ -85,7 +83,7 @@ public class UserLoginPresenter implements MVPLogin.ProvidedLoginPresenterOps, M
 
     @Override
     public void displayLoginResult(boolean result, String failureReason) {
-        mView.get().displayLoginResult(result,failureReason);
+        mView.get().displayLoginResult(result, failureReason);
     }
 
     @Override
@@ -117,7 +115,7 @@ public class UserLoginPresenter implements MVPLogin.ProvidedLoginPresenterOps, M
 
     @Override
     public boolean logout() {
-       return mModelInstance.logout();
+        return mModelInstance.logout();
     }
 
     /**

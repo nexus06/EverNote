@@ -1,10 +1,12 @@
 package es.puliware.android.evernote.view;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.ScrollView;
+import android.widget.Toast;
 import com.evernote.client.android.login.EvernoteLoginFragment;
 import es.puliware.android.evernote.MVPLogin;
 import es.puliware.android.evernote.R;
@@ -14,9 +16,16 @@ import es.puliware.android.evernote.utils.ContextView;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements
-        ContextView,MVPLogin.RequiredLoginViewOps,
-        EvernoteLoginFragment.ResultCallback, View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements ContextView, MVPLogin.RequiredLoginViewOps, EvernoteLoginFragment.ResultCallback, View.OnClickListener {
+
+    /**
+     * Provides userlogin-related operations.
+     */
+    private UserLoginPresenter mLoginPresenter;
+    // UI references.
+    private ScrollView mLoginLayout;
+    private Button mLoginBtn;
+    private Button mExitBtn;
 
     @Override
     public Context getActivityContext() {
@@ -27,20 +36,10 @@ public class LoginActivity extends AppCompatActivity implements
     /**
      * Get the Application Context.
      */
-    public Context getApplicationContext(){
+    public Context getApplicationContext() {
         return getApplication().getApplicationContext();
 
     }
-
-    /**
-     * Provides userlogin-related operations.
-     */
-    private UserLoginPresenter mLoginPresenter;
-
-    // UI references.
-    private ScrollView mLoginLayout;
-    private Button mLoginBtn;
-    private Button mExitBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +54,9 @@ public class LoginActivity extends AppCompatActivity implements
     }
 
     private void initUIControls() {
-       mLoginLayout = (ScrollView) findViewById(R.id.login_form);
-       mLoginBtn = (Button) findViewById(R.id.sign_in_button);
-       mExitBtn = (Button) findViewById(R.id.exit_button);
+        mLoginLayout = (ScrollView) findViewById(R.id.login_form);
+        mLoginBtn = (Button) findViewById(R.id.sign_in_button);
+        mExitBtn = (Button) findViewById(R.id.exit_button);
         mLoginBtn.setOnClickListener(this);
         mExitBtn.setOnClickListener(this);
     }
@@ -69,23 +68,22 @@ public class LoginActivity extends AppCompatActivity implements
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
-        if(mLoginPresenter.isLoggedIn()){
+        if (mLoginPresenter.isLoggedIn()) {
             mLoginPresenter.displayLoginResult(true, "testing API");
             /*//TODO remove at end version
             mLoginPresenter.logout();*/
             finish();
 
-        }else {
+        } else {
             mLoginPresenter.authenticate();
         }
     }
 
 
-
     @Override
     public void displayLoginResult(boolean successful, String failureReason) {
         if (successful) {
-            Toast.makeText(this,"login succesed", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "login succesed", Toast.LENGTH_LONG).show();
             startActivity(ItemListActivity.getLaunchIntent(this));
             finish();
         } else {
@@ -103,7 +101,7 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.sign_in_button:
                 attemptLogin();
                 break;

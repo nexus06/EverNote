@@ -16,18 +16,21 @@ import java.util.ArrayList;
 
 /**
  * An activity representing a single screen for create Note by edit text/ gestures
- *
+ * <p>
  * in a {@link ItemListActivity}.
  */
 public class CreateGestureNoteActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener, View.OnFocusChangeListener {
 
+    //prediction threshold < 1 is too low
+    private static final int threshold = 1;
     private GestureLibrary gestureLibrary;
     private EditText title;
     private EditText content;
     private EditText mOutputView;
-    //prediction threshold < 1 is too low
-    private static final int threshold= 1;
 
+    public static Intent getLaunchIntent(Context context) {
+        return new Intent(context, CreateGestureNoteActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         if (savedInstanceState == null) {
             //TODO check
         }
-        title = (EditText)findViewById(R.id.title);
+        title = (EditText) findViewById(R.id.title);
         content = (EditText) findViewById(R.id.content);
         title.setOnFocusChangeListener(this);
         content.setOnFocusChangeListener(this);
@@ -70,18 +73,14 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         }
     }
 
-    public static Intent getLaunchIntent(Context context) {
-        return new Intent(context, CreateGestureNoteActivity.class);
-    }
-
     @Override
     public void onFocusChange(View view, boolean b) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.title:
                 mOutputView = title;
                 break;
             case R.id.content:
-                 mOutputView = content;
+                mOutputView = content;
                 break;
             default:
                 mOutputView = title;
@@ -90,22 +89,22 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
     }
 
 
-    private void createNote(){
+    private void createNote() {
         String titleStr = title.getText().toString();
         String contentStr = content.getText().toString();
-        if(!titleStr.isEmpty()&&!contentStr.isEmpty()){
-            setResult(Activity.RESULT_OK,getResultIntent(titleStr, contentStr));
+        if (!titleStr.isEmpty() && !contentStr.isEmpty()) {
+            setResult(Activity.RESULT_OK, getResultIntent(titleStr, contentStr));
             finish();
-        }else {
+        } else {
             title.setError(getString(R.string.empty));
             content.setError(getString(R.string.empty));
         }
     }
 
-    private Intent getResultIntent(String titleStr, String contentStr){
+    private Intent getResultIntent(String titleStr, String contentStr) {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra(ItemListActivity.TITLE_EXTRA,titleStr);
-        returnIntent.putExtra(ItemListActivity.CONTENT_EXTRA,contentStr);
+        returnIntent.putExtra(ItemListActivity.TITLE_EXTRA, titleStr);
+        returnIntent.putExtra(ItemListActivity.CONTENT_EXTRA, contentStr);
         return returnIntent;
 
     }
@@ -115,19 +114,18 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         ArrayList<Prediction> predictions = gestureLibrary.recognize(gesture);
 
         Prediction maxPredictionScored = null;
-        for(Prediction prediction: predictions){
-            if(prediction.score > threshold && maxPredictionScored!=null && maxPredictionScored.score<prediction.score){
+        for (Prediction prediction : predictions) {
+            if (prediction.score > threshold && maxPredictionScored != null && maxPredictionScored.score < prediction.score) {
                 maxPredictionScored = prediction;
-            }else if (maxPredictionScored==null){
+            } else if (maxPredictionScored == null) {
                 maxPredictionScored = prediction;
             }
 
         }
-        if(maxPredictionScored!=null){
+        if (maxPredictionScored != null) {
             mOutputView.append(maxPredictionScored.name);
         }
     }
-
 
 
 }
