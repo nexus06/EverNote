@@ -36,9 +36,13 @@ well known menu in android.
 Retained this info in retained fragment over state changes (turn screen etc)
 
 # Feature notes list and note detail:
+
 Design pattern: the well known lisview/detail for android.
+
 Notes in List are displayed in a RecyclerView widget because is a more advanced and flexible version of ListView (see https://developer.android.com/training/material/lists-cards.html).
+
 We uses a simple cardview for concrete element in list.
+
 Note content: Depending on screen size: new activity for smalls screen and fragment for big screens.
 
 #Feature create note by keyboard:
@@ -49,21 +53,21 @@ Pressing floating button "+", new activity is called, then user is able to creat
 
 Android Text Recognition API has been used to implement this feature.
 
-It is litle hard to do but really easy to implement (Basically a GestureOverlayView and OnGesturePerformedListener.) 
-But, the "hard metal" part is the gestures library creation...must be done character by character... It has been created using "gesture tool", the pulled from device
-and then added as a resource at res/raw/gestures.txt
+It is litle hard to do but really easy to implement (Basically a GestureOverlayView and OnGesturePerformedListener.).
+
+The "hard metal" part is the gestures library creation...must be done character by character... It has been created using "gesture tool", then pulled from device and finally added as a resource at res/raw/gestures.txt.
 
 We use same "create note" interface to improve user experience.
 
 # Other features:
 
-State change managed using "retained fragment".
+-State change managed using "retained fragment".
 
-Support for different screen sizes.
+-Support for different screen sizes.
 
-All calls are Async to thrift RPC, passing corresponding callbacks (provided by Evernote API).
+-All calls are Async to thrift RPC, passing corresponding callbacks (provided by Evernote API).
 
-Swipe view to refresh the list elements.
+-Swipe view to refresh the list elements.
 
 # Video
 https://youtu.be/tz1rDhff29E
