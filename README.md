@@ -70,7 +70,7 @@ We use same "create note" interface to improve user experience.
 -Swipe view to refresh the list elements.
 
 # Video
-https://youtu.be/tz1rDhff29E
+https://youtu.be/35WF0Syps1Q
 
 
 
