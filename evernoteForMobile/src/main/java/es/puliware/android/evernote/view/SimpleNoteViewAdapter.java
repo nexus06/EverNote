@@ -74,12 +74,15 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
                 callBack = new EvernoteCallback<Note>() {
                     @Override
                     public void onSuccess(Note note) {
+                        ((ItemListActivity)context.get()).dismisProgress();
                         if (mTwoPane) {
                             Bundle arguments = new Bundle();
                             arguments.putString(ItemDetailFragment.ARG_ITEM_ID, note.getContent());
                             ItemDetailFragment fragment = new ItemDetailFragment();
                             fragment.setArguments(arguments);
-                            ((ItemListActivity)context.get()).getSupportFragmentManager().beginTransaction().replace(R.id.item_detail_container, fragment).commit();
+                            (context.get()).
+                                    getSupportFragmentManager().beginTransaction().
+                                    replace(R.id.item_detail_container, fragment).commit();
                         } else {
                             Intent intent = new Intent(context.get(), ItemDetailActivity.class);
                             intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, note.getContent());
@@ -90,6 +93,7 @@ public class SimpleNoteViewAdapter extends RecyclerView.Adapter<SimpleNoteViewAd
 
                     @Override
                     public void onException(Exception e) {
+                        ((ItemListActivity)context.get()).dismisProgress();
                         Log.e(TAG, Log.getStackTraceString(e));
 
                     }

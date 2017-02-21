@@ -22,6 +22,7 @@ import es.puliware.android.evernote.MVPNotes;
 import es.puliware.android.evernote.R;
 
 import es.puliware.android.evernote.presenter.UserNotesPresenter;
+import es.puliware.android.evernote.utils.Utils;
 
 import java.util.List;
 
@@ -39,6 +40,9 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
      * Tag for logging
      */
     protected final static String TAG = ItemListActivity.class.getSimpleName();
+    public static final int CREATE_NOTE_REQUEST = 1;
+    public static final String TITLE_EXTRA = "TITLE_EXTRA";
+    public static final String CONTENT_EXTRA = "CONTENT_EXTRA";
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -195,11 +199,8 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
 
         // mNotesPresenter.listNotesAsync(NoteSortOrder.TITLE);
         /*CreateNoteFragment createNoteFragment = new CreateNoteFragment();
-        createNoteFragment.show(getSupportFragmentManager(),"createDialog");
-*/
-        startActivity(CreateGestureNoteActivity.getLaunchIntent(this));
-
-
+        createNoteFragment.show(getSupportFragmentManager(),"createDialog");*/
+        startActivityForResult(CreateGestureNoteActivity.getLaunchIntent(this), CREATE_NOTE_REQUEST);
     }
 
     @Override
@@ -210,11 +211,25 @@ public class ItemListActivity extends AppCompatActivity implements MVPNotes.Requ
     public void onAlertDialogPositiveClick(String title, String rawContent) {
         Note note = new Note();
         note.setTitle(title);
-        String formattedContent=
-        EvernoteUtil.NOTE_PREFIX
-                + rawContent
-                + EvernoteUtil.NOTE_SUFFIX;
-        note.setContent(formattedContent);
+        note.setContent(Utils.getProcessedContent(rawContent));
         mNotesPresenter.createNoteAsync(note);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == CREATE_NOTE_REQUEST) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                String title = data.getStringExtra(TITLE_EXTRA);
+                String rawContent = data.getStringExtra(CONTENT_EXTRA);
+                Note newNote = new Note();
+                newNote.setTitle(title);
+                newNote.setContent(Utils.getProcessedContent(rawContent));
+                mNotesPresenter.createNoteAsync(newNote);
+            }
+        }
+    }
+
 }

@@ -1,22 +1,15 @@
 package es.puliware.android.evernote.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.gesture.*;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NavUtils;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import es.puliware.android.evernote.R;
-import es.puliware.android.evernote.utils.ContextView;
 
 import java.util.ArrayList;
 
@@ -26,27 +19,22 @@ import java.util.ArrayList;
  * item details are presented side-by-side with a list of items
  * in a {@link ItemListActivity}.
  */
-public class CreateGestureNoteActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener {
+public class CreateGestureNoteActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener, View.OnFocusChangeListener, View.OnClickListener {
 
     private GestureLibrary gestureLibrary;
-    private EditText output;
+    private EditText title;
+    private EditText content;
+    private EditText mOutputView;
+    private Button createNote;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_note_gestures);
 
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
         if (savedInstanceState == null) {
-
+            //TODO check
         }
 
         gestureLibrary = GestureLibraries.fromRawResource(this, R.raw.gestures);
@@ -55,13 +43,13 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
         }
 
         GestureOverlayView gestureOverlayView = (GestureOverlayView) findViewById(R.id.gestureLayout);
-
         gestureOverlayView.addOnGesturePerformedListener(this);
-
-        output = (EditText)findViewById(R.id.title);
-
-
-
+        title = (EditText)findViewById(R.id.title);
+        content = (EditText) findViewById(R.id.content);
+        title.setOnFocusChangeListener(this);
+        content.setOnFocusChangeListener(this);
+        createNote = (Button)findViewById(R.id.create);
+        createNote.setOnClickListener(this);
     }
 
     @Override
@@ -79,11 +67,44 @@ public class CreateGestureNoteActivity extends AppCompatActivity implements Gest
 
         }
         if(maxPredictionScored!=null){
-            output.append(maxPredictionScored.name);
+            mOutputView.append(maxPredictionScored.name);
         }
     }
 
     public static Intent getLaunchIntent(Context context) {
         return new Intent(context, CreateGestureNoteActivity.class);
+    }
+
+    @Override
+    public void onFocusChange(View view, boolean b) {
+        switch (view.getId()){
+            case R.id.title:
+                mOutputView = title;
+                break;
+            case R.id.content:
+                 mOutputView = content;
+                break;
+            default:
+                mOutputView = title;
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        String titleStr = title.getText().toString();
+        String contentStr = content.getText().toString();
+        if(!titleStr.isEmpty()&&!contentStr.isEmpty()){
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra(ItemListActivity.TITLE_EXTRA,titleStr);
+            returnIntent.putExtra(ItemListActivity.CONTENT_EXTRA,contentStr);
+            setResult(Activity.RESULT_OK,returnIntent);
+            finish();
+        }else {
+            title.setError(getString(R.string.empty));
+            content.setError(getString(R.string.empty));
+        }
+
     }
 }

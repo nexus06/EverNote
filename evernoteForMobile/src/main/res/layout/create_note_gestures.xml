@@ -17,28 +17,42 @@
             android:orientation="vertical">
 
 
-             <EditText
-                 android:id="@+id/title"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:hint="@string/title"
-                 android:imeActionLabel="@string/action_sign_in_short"
-                 android:imeOptions="actionUnspecified"
-                 android:maxLines="1"
-                 android:inputType="text"
-                 android:singleLine="true" />
-
-
+            <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/content"
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/title"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionUnspecified"
+                        android:maxLines="1"
+                        android:inputType="text"
+                        android:singleLine="true" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+
+            <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="@string/content"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="text"
-                    android:singleLine="false" />
+                    android:layout_height="match_parent">
+
+                <EditText
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:hint="@string/content"
+                        android:imeActionId="@+id/login"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="text"
+                        android:singleLine="false" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <android.gesture.GestureOverlayView android:id="@+id/gestureLayout"
                 android:layout_height="400dp"
@@ -59,6 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
                     android:text="@string/create"
                     android:textStyle="bold" />
             </LinearLayout>
