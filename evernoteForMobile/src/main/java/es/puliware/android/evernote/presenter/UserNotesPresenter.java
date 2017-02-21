@@ -157,11 +157,6 @@ public class UserNotesPresenter implements MVPNotes.ProvidedNotesPresenterOps, M
     }
 
     @Override
-    public boolean isLoggedIn() {
-        return mModelInstance.isLoggedIn();
-    }
-
-    @Override
     public boolean logout() {
         return mModelInstance.logout();
     }

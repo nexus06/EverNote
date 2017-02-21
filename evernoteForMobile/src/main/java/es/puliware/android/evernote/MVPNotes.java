@@ -52,12 +52,6 @@ public interface MVPNotes {
      * ItemListActivity in the View layer.
      */
     public interface ProvidedNotesPresenterOps extends LoginPresenterOps<RequiredNotesViewOps> {
-        /**
-         * Check if user already logged in
-         *
-         * @return false if already logged in
-         */
-        boolean isLoggedIn();
 
         boolean logout();
 
