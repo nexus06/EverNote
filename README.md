@@ -3,7 +3,7 @@
 # Resume
 
 The app has been designed following MVP (https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) pattern. 
-This pattern assumes perfectly all the functionality and waranty minimun couple and communication between different layers.
+This pattern assumes perfectly all the functionality, waranty minimun couple between different layers and ensures communication.
 
 First of all, two interfaces that are required and provided by the layers in the Model-View-Presenter have been designed. 
 This design ensures loose coupling between the layers in the app's MVP-based architecture.
