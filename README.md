@@ -45,11 +45,11 @@ We uses a simple cardview for concrete element in list.
 
 Note content: Depending on screen size: new activity for smalls screen and fragment for big screens.
 
-#Feature create note by keyboard:
+# Feature create note by keyboard:
 
 Pressing floating button "+", new activity is called, then user is able to create note by keyoboard or by hand writing in screen.
 
-#Feature create note by keyboard:
+# Feature create note by text recognition OCR:
 
 Android Text Recognition API has been used to implement this feature.
 
